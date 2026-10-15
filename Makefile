@@ -1,18 +1,19 @@
 CXX ?= clang++
 CXXFLAGS ?= -std=c++20 -O2 -Wall -Wextra -Iinclude
 LDFLAGS_SQLITE ?= -lsqlite3
+HEADERS := $(shell find include -type f \( -name '*.hpp' -o -name '*.h' \))
 
 .PHONY: all test bench clean
 
 all: aegisql aegis_test bench_tpch
 
-aegisql: tools/aegisql.cpp
+aegisql: tools/aegisql.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-aegis_test: tests/test_aegis.cpp
+aegis_test: tests/test_aegis.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-bench_tpch: bench/bench_tpch.cpp
+bench_tpch: bench/bench_tpch.cpp $(HEADERS)
 	$(CXX) $(CXXFLAGS) -o $@ $< $(LDFLAGS_SQLITE)
 
 test: aegis_test

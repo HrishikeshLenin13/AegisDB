@@ -19,3 +19,7 @@ bench-data/
 graphify-out/
 compile_commands.json
 CMakeUserPresets.json
+
+# Python regression test bytecode
+__pycache__/
+*.py[cod]
