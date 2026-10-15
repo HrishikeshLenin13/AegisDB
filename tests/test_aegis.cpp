@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <iostream>
 #include <string>
+#include <stdexcept>
+#include <limits>
 
 namespace fs = std::filesystem;
 using namespace aegisdb;
@@ -80,6 +82,24 @@ static void TestBPlus() {
   for (int i = 0; i < 50; ++i) t.Remove(Value::Integer(i), RID{static_cast<std::uint32_t>(i), 0});
   CHECK(t.Search(Value::Integer(5)).empty());
   CHECK(t.Search(Value::Integer(200)).size() == 1);
+}
+
+static void TestBloomInvalidProbability() {
+  BloomFilter filter(100, 0.01);
+  filter.Add("retained");
+  for (double probability : {0.0, -0.1, 1.0, 1.1,
+                             std::numeric_limits<double>::infinity(),
+                             std::numeric_limits<double>::quiet_NaN()}) {
+    bool rejected = false;
+    try {
+      filter.Reset(100, probability);
+    } catch (const std::invalid_argument&) {
+      rejected = true;
+    }
+    CHECK(rejected);
+    CHECK(filter.Count() == 1);
+    CHECK(filter.MaybeContains("retained"));
+  }
 }
 
 static void TestHashAndBloom() {
@@ -156,6 +176,7 @@ int main() {
   TestBufferPool();
   TestBPlus();
   TestHashAndBloom();
+  TestBloomInvalidProbability();
   TestSqlAndOptimizer();
   TestMvccAndWal();
   if (g_fails) {

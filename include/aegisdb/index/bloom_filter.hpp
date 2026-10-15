@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
@@ -17,6 +18,11 @@ class BloomFilter {
   BloomFilter(std::size_t expected, double fpr = 0.01) { Reset(expected, fpr); }
 
   void Reset(std::size_t expected, double fpr = 0.01) {
+    // Validate before changing an existing filter or converting log results
+    // to allocation sizes. NaN/infinity and endpoints are not probabilities.
+    if (!std::isfinite(fpr) || fpr <= 0.0 || fpr >= 1.0) {
+      throw std::invalid_argument("Bloom filter false-positive rate must be finite and between 0 and 1");
+    }
     if (expected == 0) expected = 64;
     // m = -n ln(p) / (ln 2)^2
     double m = -static_cast<double>(expected) * std::log(fpr) / (0.693147 * 0.693147);
