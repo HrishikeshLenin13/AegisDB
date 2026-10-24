@@ -53,6 +53,12 @@ class BloomFilter {
     return true;
   }
 
+  // Reuse the current capacity and hash count without reallocating.
+  void Clear() {
+    std::fill(bits_.begin(), bits_.end(), 0);
+    n_ = 0;
+  }
+
   std::size_t SizeBytes() const { return bits_.size(); }
   std::size_t Count() const { return n_; }
 

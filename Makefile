@@ -18,6 +18,8 @@ bench_tpch: bench/bench_tpch.cpp $(HEADERS)
 
 test: aegis_test
 	./aegis_test
+	$(CXX) $(CXXFLAGS) tests/test_bloom_clear.cpp -o /tmp/aegis-bloom-clear-test
+	/tmp/aegis-bloom-clear-test
 
 bench: bench_tpch
 	./bench_tpch 1
