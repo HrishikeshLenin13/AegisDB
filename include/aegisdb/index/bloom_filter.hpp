@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <string>
 #include <string_view>
 #include <stdexcept>
@@ -26,8 +27,15 @@ class BloomFilter {
     if (expected == 0) expected = 64;
     // m = -n ln(p) / (ln 2)^2
     double m = -static_cast<double>(expected) * std::log(fpr) / (0.693147 * 0.693147);
-    bits_.assign(static_cast<std::size_t>(m / 8) + 1, 0);
-    k_ = static_cast<int>(std::max(1.0, (static_cast<double>(bits_.size() * 8) / expected) * 0.693147));
+    // Bound bits as well as bytes: Add/MaybeContains multiply the size by 8.
+    const auto max_bytes = std::min(bits_.max_size(), std::numeric_limits<std::size_t>::max() / 8);
+    if (!std::isfinite(m) || m / 8 >= static_cast<double>(max_bytes)) {
+      throw std::length_error("Bloom filter capacity is too large");
+    }
+    std::vector<std::uint8_t> next(static_cast<std::size_t>(m / 8) + 1, 0);
+    const int next_k = static_cast<int>(std::max(1.0, (static_cast<double>(next.size() * 8) / expected) * 0.693147));
+    bits_.swap(next);
+    k_ = next_k;
     n_ = 0;
   }
 

@@ -20,6 +20,8 @@ test: aegis_test
 	./aegis_test
 	$(CXX) $(CXXFLAGS) tests/test_bloom_clear.cpp -o /tmp/aegis-bloom-clear-test
 	/tmp/aegis-bloom-clear-test
+	$(CXX) $(CXXFLAGS) tests/test_bloom_capacity.cpp -o /tmp/aegis-bloom-capacity-test
+	/tmp/aegis-bloom-capacity-test
 
 bench: bench_tpch
 	./bench_tpch 1
