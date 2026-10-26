@@ -51,6 +51,11 @@ class BloomFilter {
     ++n_;
   }
 
+  template <typename InputIterator>
+  void AddRange(InputIterator first, InputIterator last) {
+    for (; first != last; ++first) Add(*first);
+  }
+
   bool MaybeContains(std::string_view key) const {
     if (bits_.empty()) return true;
     auto [h1, h2] = Hash(key);
