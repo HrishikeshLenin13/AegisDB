@@ -138,4 +138,7 @@ Page p;p.Init(9,aegisdb::PageType::Heap);p.SetRef(true);p.Reset();assert(!p.IsDi
   { // page-pin-accounting-is-balanced
 Page p;p.Pin();p.Pin();assert(p.PinCount()==2);p.Unpin();p.Unpin();assert(p.PinCount()==0);
   }
+  { // page-lsn-updates-are-observable
+Page p;p.SetLsn(123);assert(p.GetLsn()==123);
+  }
 }
