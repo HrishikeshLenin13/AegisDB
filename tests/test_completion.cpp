@@ -63,4 +63,7 @@ Page p;P::Init(&p,7);std::uint8_t b[]={1,2,3};auto id=P::Insert(&p,b,3);std::uin
   { // readinto-does-not-overwrite-destination-tail
 Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);std::uint8_t dest[]={9,8};assert(P::ReadInto(&p,*id,dest)==1);assert(dest[0]==1&&dest[1]==8);
   }
+  { // readinto-rejects-deleted-tuples
+Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::ReadInto(&p,*id,std::span<std::uint8_t>(&b,1)));
+  }
 }
