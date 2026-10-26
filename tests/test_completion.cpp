@@ -48,4 +48,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;assert(!P::Update(&p,99,&b,1));assert(P::L
   { // deleted-update-targets-stay-deleted
 Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::Update(&p,*id,&b,1));
   }
+  { // compaction-preserves-page-and-tuple-identities
+Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Compact(&p);assert(p.GetPageId()==7);assert(P::Read(&p,*id)->at(0)==3);
+  }
 }
