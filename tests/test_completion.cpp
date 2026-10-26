@@ -96,4 +96,7 @@ std::vector<std::string> keys={"a","b","c"};Bloom x(100),y(100);x.AddRange(keys.
   { // merging-compatible-bloom-filters-preserves-both-key-sets
 Bloom a(100),b(100);a.Add("a");b.Add("b");a.MergeFrom(b);assert(a.MaybeContains("a")&&a.MaybeContains("b")&&a.Count()==2);
   }
+  { // incompatible-bloom-merges-do-not-change-the-receiver
+Bloom a(100),b(1000);a.Add("a");auto fill=a.FillRatio();bool fail=false;try{a.MergeFrom(b);}catch(const std::invalid_argument&){fail=true;}assert(fail&&a.FillRatio()==fill&&a.Count()==1);
+  }
 }
