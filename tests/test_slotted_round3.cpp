@@ -15,6 +15,12 @@ int main() {
     assert(page.FreeSpace()==before+100 && aegisdb::SlottedPage::ReclaimableBytes(&page)==0);
     assert(aegisdb::SlottedPage::Read(&page,*b).value()==data);
   }
+  { aegisdb::Page page;aegisdb::SlottedPage::Init(&page,1);std::vector<std::uint8_t> data(100,8);
+    std::vector<std::uint16_t> ids;while(auto id=aegisdb::SlottedPage::Insert(&page,data.data(),100)) ids.push_back(*id);
+    aegisdb::SlottedPage::Delete(&page,ids.front());assert(aegisdb::SlottedPage::ReclaimableBytes(&page)==100);
+    auto inserted=aegisdb::SlottedPage::Insert(&page,data.data(),100);assert(inserted==ids.front());
+    for(auto id:ids) assert(aegisdb::SlottedPage::Read(&page,id).value()==data);
+  }
   // CASES
   std::cout << "Slotted-page regression checks passed.\n";
 }

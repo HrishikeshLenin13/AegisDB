@@ -63,7 +63,10 @@ class SlottedPage {
       }
     }
     const std::uint16_t dir_grow = (reuse < 0) ? kSlotSize : 0;
-    if (page->FreeSpace() < size + dir_grow) return std::nullopt;
+    if (page->FreeSpace() < size + dir_grow) {
+      if (page->FreeSpace() + ReclaimableBytes(page) < size + dir_grow) return std::nullopt;
+      Compact(page);
+    }
     h->free_end = static_cast<std::uint16_t>(h->free_end - size);
     std::memcpy(page->Data() + h->free_end, data, size);
     Slot s{h->free_end, size, 0};
