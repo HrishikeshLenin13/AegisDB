@@ -18,4 +18,7 @@ Page p;P::Init(&p,7);std::uint8_t bytes[]={0,255,0,7};auto id=P::Insert(&p,bytes
   { // multiple-inserts-keep-stable-distinct-slot-ids
 Page p;P::Init(&p,7);std::uint8_t b=1;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&b,1);assert(x&&y&&*x!=*y);assert(P::LiveTupleCount(&p)==2);
   }
+  { // oversized-inserts-leave-live-data-intact
+Page p;P::Init(&p,7);std::uint8_t b=7;auto id=P::Insert(&p,&b,1);std::vector<std::uint8_t> large(4096,1);assert(!P::Insert(&p,large.data(),4096));assert(P::Read(&p,*id)->at(0)==7);
+  }
 }
