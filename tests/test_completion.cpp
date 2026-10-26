@@ -39,4 +39,7 @@ Page p;P::Init(&p,7);std::uint8_t data[]={1,2,3};auto id=P::Insert(&p,data,3);as
   { // growing-updates-keep-neighboring-tuples-unchanged
 Page p;P::Init(&p,7);std::uint8_t b=2;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&b,1);std::vector<std::uint8_t> data(80,9);assert(P::Update(&p,*x,data.data(),80));assert(P::Read(&p,*y)->at(0)==2);
   }
+  { // failed-growth-retains-the-original-tuple
+Page p;P::Init(&p,7);std::uint8_t b=7;auto id=P::Insert(&p,&b,1);std::vector<std::uint8_t> data(4096,9);assert(!P::Update(&p,*id,data.data(),4096));assert(P::Read(&p,*id)->at(0)==7);
+  }
 }
