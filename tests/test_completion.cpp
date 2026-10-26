@@ -21,4 +21,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&
   { // oversized-inserts-leave-live-data-intact
 Page p;P::Init(&p,7);std::uint8_t b=7;auto id=P::Insert(&p,&b,1);std::vector<std::uint8_t> large(4096,1);assert(!P::Insert(&p,large.data(),4096));assert(P::Read(&p,*id)->at(0)==7);
   }
+  { // deleting-an-unknown-slot-does-not-change-occupancy
+Page p;P::Init(&p,7);assert(!P::Delete(&p,99));assert(P::LiveTupleCount(&p)==0);
+  }
 }
