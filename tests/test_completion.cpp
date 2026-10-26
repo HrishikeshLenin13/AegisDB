@@ -105,4 +105,7 @@ Bloom a(100);a.Add("a");Bloom b=a;b.Clear();assert(a.MaybeContains("a")&&!a.Empt
   { // bloom-fill-and-model-estimates-stay-bounded
 Bloom b(10);for(int i=0;i<1000;i++)b.Add(std::to_string(i));assert(b.FillRatio()>=0&&b.FillRatio()<=1);assert(b.EstimatedFalsePositiveRate()>=0&&b.EstimatedFalsePositiveRate()<=1);
   }
+  { // empty-bulk-insertion-does-not-change-filter-state
+Bloom b(10);std::vector<std::string> keys;b.AddRange(keys.begin(),keys.end());assert(b.Empty()&&b.FillRatio()==0);
+  }
 }
