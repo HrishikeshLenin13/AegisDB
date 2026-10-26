@@ -42,4 +42,7 @@ Page p;P::Init(&p,7);std::uint8_t b=2;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&
   { // failed-growth-retains-the-original-tuple
 Page p;P::Init(&p,7);std::uint8_t b=7;auto id=P::Insert(&p,&b,1);std::vector<std::uint8_t> data(4096,9);assert(!P::Update(&p,*id,data.data(),4096));assert(P::Read(&p,*id)->at(0)==7);
   }
+  { // unknown-update-targets-do-not-create-tuples
+Page p;P::Init(&p,7);std::uint8_t b=1;assert(!P::Update(&p,99,&b,1));assert(P::LiveTupleCount(&p)==0);
+  }
 }
