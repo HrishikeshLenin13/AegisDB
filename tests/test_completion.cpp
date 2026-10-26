@@ -54,4 +54,7 @@ Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Compact(&p);
   { // compaction-is-idempotent-for-free-space
 Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);P::Compact(&p);auto free=p.FreeSpace();P::Compact(&p);assert(p.FreeSpace()==free);assert(P::ReclaimableBytes(&p)==0);
   }
+  { // reclaimable-bytes-exclude-live-payloads
+Page p;P::Init(&p,7);std::vector<std::uint8_t> bytes(50,3);auto id=P::Insert(&p,bytes.data(),50);assert(P::ReclaimableBytes(&p)==0);P::Update(&p,*id,bytes.data(),20);assert(P::ReclaimableBytes(&p)==30);
+  }
 }
