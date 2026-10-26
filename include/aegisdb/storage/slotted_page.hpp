@@ -146,16 +146,19 @@ class SlottedPage {
     return bytes;
   }
 
+  // Tuple-region garbage only; slot-directory bytes remain allocated.
+  static std::size_t ReclaimableBytes(const Page* page) {
+    return kPageSize - page->Header()->free_end - LiveBytes(page);
+  }
+
   static void MaybeCompact(Page* page) {
+    if (ReclaimableBytes(page) < 256) return;
+    Compact(page);
+  }
+
+  // Preserve stable slot IDs while reclaiming every dead/shrunken tuple byte.
+  static void Compact(Page* page) {
     auto* h = page->Header();
-    // Compact if free space is fragmented (more than 25% wasted vs live tuples).
-    std::uint32_t live = 0;
-    for (std::uint16_t i = 0; i < h->slot_count; ++i) {
-      Slot s = ReadSlot(page, i);
-      if (!(s.flags & kSlotEmpty)) live += s.size;
-    }
-    const std::uint32_t occupied = kPageSize - h->free_end + (h->free_start - kPageHeaderSize);
-    if (occupied < live + 256) return;
     std::vector<std::vector<std::uint8_t>> tuples(h->slot_count);
     std::vector<bool> empty(h->slot_count);
     for (std::uint16_t i = 0; i < h->slot_count; ++i) {
