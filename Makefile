@@ -22,6 +22,8 @@ test: aegis_test
 	/tmp/aegis-bloom-clear-test
 	$(CXX) $(CXXFLAGS) tests/test_bloom_capacity.cpp -o /tmp/aegis-bloom-capacity-test
 	/tmp/aegis-bloom-capacity-test
+	$(CXX) $(CXXFLAGS) tests/test_bloom_round2.cpp -o /tmp/aegis-bloom-round2-test
+	/tmp/aegis-bloom-round2-test
 
 bench: bench_tpch
 	./bench_tpch 1

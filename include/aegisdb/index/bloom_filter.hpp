@@ -67,6 +67,10 @@ class BloomFilter {
     n_ = 0;
   }
 
+  bool Empty() const { return n_ == 0; }
+  std::size_t BitCount() const { return bits_.size() * 8; }
+  int HashCount() const { return k_; }
+
   std::size_t SizeBytes() const { return bits_.size(); }
   std::size_t Count() const { return n_; }
 
