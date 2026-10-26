@@ -80,3 +80,7 @@ make            # or: cmake -B build && cmake --build build
 `BloomFilter::Clear()` removes inserted entries while retaining the allocated capacity and hash count. Reuse the filter with `Add()` afterward. An uninitialized filter remains conservative and returns `true` for possible membership.
 
 `Reset()` validates requested capacity before allocating; an overflowing request raises `std::length_error` and preserves the previous filter. `make test` includes clear/reuse and capacity-overflow regression checks.
+
+## Developer resources
+
+- [Feature usage and API contracts](docs/RECENT_IMPROVEMENTS.md)
