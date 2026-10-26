@@ -27,4 +27,7 @@ Page p;P::Init(&p,7);assert(!P::Delete(&p,99));assert(P::LiveTupleCount(&p)==0);
   { // deleting-the-same-tuple-twice-is-not-success
 Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);assert(P::Delete(&p,*id));assert(!P::Delete(&p,*id));
   }
+  { // deleted-slots-are-not-readable
+Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::Read(&p,*id));
+  }
 }
