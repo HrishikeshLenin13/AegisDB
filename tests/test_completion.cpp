@@ -75,4 +75,7 @@ Bloom b;assert(b.MaybeContains("anything"));assert(b.EstimatedFalsePositiveRate(
   { // initialized-empty-bloom-filters-have-no-occupied-bits
 Bloom b(100);assert(b.FillRatio()==0);assert(!b.MaybeContains("anything"));
   }
+  { // bloom-additions-have-no-false-negatives
+Bloom b(100);for(int i=0;i<100;i++)b.Add(std::to_string(i));for(int i=0;i<100;i++)assert(b.MaybeContains(std::to_string(i)));
+  }
 }
