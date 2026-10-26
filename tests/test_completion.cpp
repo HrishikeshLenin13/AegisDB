@@ -60,4 +60,7 @@ Page p;P::Init(&p,7);std::vector<std::uint8_t> bytes(50,3);auto id=P::Insert(&p,
   { // readinto-leaves-short-destinations-untouched
 Page p;P::Init(&p,7);std::uint8_t b[]={1,2,3};auto id=P::Insert(&p,b,3);std::uint8_t dest[]={9,9};assert(!P::ReadInto(&p,*id,dest));assert(dest[0]==9&&dest[1]==9);
   }
+  { // readinto-does-not-overwrite-destination-tail
+Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);std::uint8_t dest[]={9,8};assert(P::ReadInto(&p,*id,dest)==1);assert(dest[0]==1&&dest[1]==8);
+  }
 }
