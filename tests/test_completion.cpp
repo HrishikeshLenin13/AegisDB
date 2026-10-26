@@ -120,4 +120,7 @@ aegisdb::RID id;assert(!id.Valid());assert(id.page_id==aegisdb::kInvalidPageId);
   { // record-identifiers-compare-page-before-slot
 aegisdb::RID a{1,9},b{2,0};assert(a<b);assert(!(b<a));
   }
+  { // record-identifiers-compare-slots-within-pages
+aegisdb::RID a{1,2},b{1,3};assert(a<b&&a!=b);
+  }
 }
