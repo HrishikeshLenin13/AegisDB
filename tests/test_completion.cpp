@@ -57,4 +57,7 @@ Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Delete(&p,*i
   { // reclaimable-bytes-exclude-live-payloads
 Page p;P::Init(&p,7);std::vector<std::uint8_t> bytes(50,3);auto id=P::Insert(&p,bytes.data(),50);assert(P::ReclaimableBytes(&p)==0);P::Update(&p,*id,bytes.data(),20);assert(P::ReclaimableBytes(&p)==30);
   }
+  { // readinto-leaves-short-destinations-untouched
+Page p;P::Init(&p,7);std::uint8_t b[]={1,2,3};auto id=P::Insert(&p,b,3);std::uint8_t dest[]={9,9};assert(!P::ReadInto(&p,*id,dest));assert(dest[0]==9&&dest[1]==9);
+  }
 }
