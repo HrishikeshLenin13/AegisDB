@@ -15,4 +15,7 @@ Page p;P::Init(&p,7);assert(P::LiveTupleCount(&p)==0);assert(P::LiveBytes(&p)==0
   { // insertion-preserves-binary-payloads
 Page p;P::Init(&p,7);std::uint8_t bytes[]={0,255,0,7};auto id=P::Insert(&p,bytes,4);assert(id);assert(P::Read(&p,*id).value()==std::vector<std::uint8_t>(bytes,bytes+4));
   }
+  { // multiple-inserts-keep-stable-distinct-slot-ids
+Page p;P::Init(&p,7);std::uint8_t b=1;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&b,1);assert(x&&y&&*x!=*y);assert(P::LiveTupleCount(&p)==2);
+  }
 }
