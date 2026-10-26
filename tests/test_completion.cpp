@@ -51,4 +51,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*i
   { // compaction-preserves-page-and-tuple-identities
 Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Compact(&p);assert(p.GetPageId()==7);assert(P::Read(&p,*id)->at(0)==3);
   }
+  { // compaction-is-idempotent-for-free-space
+Page p;P::Init(&p,7);std::uint8_t b=3;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);P::Compact(&p);auto free=p.FreeSpace();P::Compact(&p);assert(p.FreeSpace()==free);assert(P::ReclaimableBytes(&p)==0);
+  }
 }
