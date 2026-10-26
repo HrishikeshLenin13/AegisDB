@@ -123,4 +123,7 @@ aegisdb::RID a{1,9},b{2,0};assert(a<b);assert(!(b<a));
   { // record-identifiers-compare-slots-within-pages
 aegisdb::RID a{1,2},b{1,3};assert(a<b&&a!=b);
   }
+  { // record-identifier-equality-uses-both-fields
+aegisdb::RID a{1,2},b{1,2};assert(a==b);assert(!(a!=b));
+  }
 }
