@@ -84,4 +84,7 @@ Bloom b(100);b.Add("same");auto fill=b.FillRatio();b.Add("same");assert(b.FillRa
   { // bloom-clear-retains-capacity-and-hash-count
 Bloom b(100);auto bytes=b.SizeBytes();auto hashes=b.HashCount();b.Add("x");b.Clear();assert(b.SizeBytes()==bytes&&b.HashCount()==hashes&&b.Empty());
   }
+  { // bloom-reset-replaces-old-insertion-state
+Bloom b(100);b.Add("old");b.Reset(200);assert(b.Empty()&&b.FillRatio()==0);
+  }
 }
