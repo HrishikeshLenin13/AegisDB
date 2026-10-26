@@ -126,4 +126,7 @@ aegisdb::RID a{1,2},b{1,3};assert(a<b&&a!=b);
   { // record-identifier-equality-uses-both-fields
 aegisdb::RID a{1,2},b{1,2};assert(a==b);assert(!(a!=b));
   }
+  { // record-identifiers-render-both-address-components
+aegisdb::RID a{12,34};assert(a.ToString()=="(12,34)");
+  }
 }
