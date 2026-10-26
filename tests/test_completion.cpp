@@ -135,4 +135,7 @@ Page p;p.Init(9,aegisdb::PageType::Heap);assert(p.GetPageId()==9&&p.Header()->ty
   { // page-reset-clears-dirty-and-reference-flags
 Page p;p.Init(9,aegisdb::PageType::Heap);p.SetRef(true);p.Reset();assert(!p.IsDirty()&&!p.Ref());
   }
+  { // page-pin-accounting-is-balanced
+Page p;p.Pin();p.Pin();assert(p.PinCount()==2);p.Unpin();p.Unpin();assert(p.PinCount()==0);
+  }
 }
