@@ -33,4 +33,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*i
   { // new-inserts-reuse-empty-slot-identifiers
 Page p;P::Init(&p,7);std::uint8_t b=1;auto old=P::Insert(&p,&b,1);P::Delete(&p,*old);auto next=P::Insert(&p,&b,1);assert(next==old);
   }
+  { // shrinking-updates-retain-the-original-slot
+Page p;P::Init(&p,7);std::uint8_t data[]={1,2,3};auto id=P::Insert(&p,data,3);assert(P::Update(&p,*id,data,1));assert(P::Read(&p,*id)->size()==1);assert(P::LiveBytes(&p)==1);
+  }
 }
