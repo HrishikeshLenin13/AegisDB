@@ -66,4 +66,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);std::uint8_t de
   { // readinto-rejects-deleted-tuples
 Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::ReadInto(&p,*id,std::span<std::uint8_t>(&b,1)));
   }
+  { // compacting-empty-pages-reclaims-no-live-bytes
+Page p;P::Init(&p,7);auto free=p.FreeSpace();P::Compact(&p);assert(P::LiveBytes(&p)==0&&p.FreeSpace()==free);
+  }
 }
