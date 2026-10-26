@@ -130,6 +130,22 @@ class SlottedPage {
     return out;
   }
 
+  static std::size_t LiveTupleCount(const Page* page) {
+    std::size_t count = 0;
+    for (std::uint16_t i = 0; i < page->Header()->slot_count; ++i)
+      if (!(ReadSlot(page, i).flags & kSlotEmpty)) ++count;
+    return count;
+  }
+
+  static std::size_t LiveBytes(const Page* page) {
+    std::size_t bytes = 0;
+    for (std::uint16_t i = 0; i < page->Header()->slot_count; ++i) {
+      auto slot = ReadSlot(page, i);
+      if (!(slot.flags & kSlotEmpty)) bytes += slot.size;
+    }
+    return bytes;
+  }
+
   static void MaybeCompact(Page* page) {
     auto* h = page->Header();
     // Compact if free space is fragmented (more than 25% wasted vs live tuples).
