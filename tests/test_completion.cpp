@@ -30,4 +30,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);assert(P::Delet
   { // deleted-slots-are-not-readable
 Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::Read(&p,*id));
   }
+  { // new-inserts-reuse-empty-slot-identifiers
+Page p;P::Init(&p,7);std::uint8_t b=1;auto old=P::Insert(&p,&b,1);P::Delete(&p,*old);auto next=P::Insert(&p,&b,1);assert(next==old);
+  }
 }
