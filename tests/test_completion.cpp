@@ -72,4 +72,7 @@ Page p;P::Init(&p,7);auto free=p.FreeSpace();P::Compact(&p);assert(P::LiveBytes(
   { // uninitialized-bloom-filters-answer-conservatively
 Bloom b;assert(b.MaybeContains("anything"));assert(b.EstimatedFalsePositiveRate()==1);
   }
+  { // initialized-empty-bloom-filters-have-no-occupied-bits
+Bloom b(100);assert(b.FillRatio()==0);assert(!b.MaybeContains("anything"));
+  }
 }
