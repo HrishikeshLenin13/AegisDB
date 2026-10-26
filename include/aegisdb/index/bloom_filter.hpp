@@ -67,6 +67,13 @@ class BloomFilter {
     n_ = 0;
   }
 
+  // Model estimate based on insertion count, not a measurement of unique keys.
+  double EstimatedFalsePositiveRate() const {
+    if (bits_.empty()) return 1.0;
+    const double occupancy = -std::expm1(-static_cast<double>(k_) * static_cast<double>(n_) / static_cast<double>(BitCount()));
+    return std::clamp(std::pow(occupancy, k_), 0.0, 1.0);
+  }
+
   bool Empty() const { return n_ == 0; }
   std::size_t BitCount() const { return bits_.size() * 8; }
   int HashCount() const { return k_; }
