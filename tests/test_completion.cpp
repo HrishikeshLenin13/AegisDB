@@ -90,4 +90,7 @@ Bloom b(100);b.Add("old");b.Reset(200);assert(b.Empty()&&b.FillRatio()==0);
   { // invalid-bloom-probabilities-preserve-existing-state
 Bloom b(100);b.Add("old");for(double rate:{0.0,1.0,-0.1}){bool fail=false;try{b.Reset(100,rate);}catch(const std::invalid_argument&){fail=true;}assert(fail&&b.MaybeContains("old")&&b.Count()==1);}
   }
+  { // bulk-bloom-insertion-matches-scalar-occupancy
+std::vector<std::string> keys={"a","b","c"};Bloom x(100),y(100);x.AddRange(keys.begin(),keys.end());for(auto&key:keys)y.Add(key);assert(x.FillRatio()==y.FillRatio()&&x.Count()==y.Count());
+  }
 }
