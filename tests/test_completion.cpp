@@ -111,4 +111,7 @@ Bloom b(10);std::vector<std::string> keys;b.AddRange(keys.begin(),keys.end());as
   { // bloom-merge-order-does-not-change-bit-occupancy
 Bloom a(100),b(100);a.Add("a");b.Add("b");Bloom x=a,y=b;x.MergeFrom(b);y.MergeFrom(a);assert(x.FillRatio()==y.FillRatio());
   }
+  { // bloom-capacity-diagnostics-use-bit-units
+Bloom b(100);assert(b.BitCount()==b.SizeBytes()*8);assert(b.HashCount()>0);
+  }
 }
