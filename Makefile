@@ -26,6 +26,8 @@ test: aegis_test
 	/tmp/aegis-bloom-round2-test
 	$(CXX) $(CXXFLAGS) tests/test_slotted_round3.cpp -o /tmp/aegis-slotted-round3
 	/tmp/aegis-slotted-round3
+	$(CXX) $(CXXFLAGS) tests/test_completion.cpp -o /tmp/aegis-completion-contracts
+	/tmp/aegis-completion-contracts
 
 bench: bench_tpch
 	./bench_tpch 1
