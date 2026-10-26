@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <bit>
 #include <cmath>
 #include <cstdint>
 #include <limits>
@@ -72,6 +73,13 @@ class BloomFilter {
     if (bits_.empty()) return 1.0;
     const double occupancy = -std::expm1(-static_cast<double>(k_) * static_cast<double>(n_) / static_cast<double>(BitCount()));
     return std::clamp(std::pow(occupancy, k_), 0.0, 1.0);
+  }
+
+  double FillRatio() const {
+    if (bits_.empty()) return 0.0;
+    std::size_t set = 0;
+    for (auto byte : bits_) set += std::popcount(static_cast<unsigned int>(byte));
+    return static_cast<double>(set) / static_cast<double>(BitCount());
   }
 
   bool Empty() const { return n_ == 0; }
