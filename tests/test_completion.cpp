@@ -141,4 +141,7 @@ Page p;p.Pin();p.Pin();assert(p.PinCount()==2);p.Unpin();p.Unpin();assert(p.PinC
   { // page-lsn-updates-are-observable
 Page p;p.SetLsn(123);assert(p.GetLsn()==123);
   }
+  { // page-free-space-never-underflows-corrupt-boundaries
+Page p;p.Header()->free_start=100;p.Header()->free_end=50;assert(p.FreeSpace()==0);
+  }
 }
