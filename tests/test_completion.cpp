@@ -93,4 +93,7 @@ Bloom b(100);b.Add("old");for(double rate:{0.0,1.0,-0.1}){bool fail=false;try{b.
   { // bulk-bloom-insertion-matches-scalar-occupancy
 std::vector<std::string> keys={"a","b","c"};Bloom x(100),y(100);x.AddRange(keys.begin(),keys.end());for(auto&key:keys)y.Add(key);assert(x.FillRatio()==y.FillRatio()&&x.Count()==y.Count());
   }
+  { // merging-compatible-bloom-filters-preserves-both-key-sets
+Bloom a(100),b(100);a.Add("a");b.Add("b");a.MergeFrom(b);assert(a.MaybeContains("a")&&a.MaybeContains("b")&&a.Count()==2);
+  }
 }
