@@ -114,4 +114,7 @@ Bloom a(100),b(100);a.Add("a");b.Add("b");Bloom x=a,y=b;x.MergeFrom(b);y.MergeFr
   { // bloom-capacity-diagnostics-use-bit-units
 Bloom b(100);assert(b.BitCount()==b.SizeBytes()*8);assert(b.HashCount()>0);
   }
+  { // default-record-identifiers-are-invalid
+aegisdb::RID id;assert(!id.Valid());assert(id.page_id==aegisdb::kInvalidPageId);
+  }
 }
