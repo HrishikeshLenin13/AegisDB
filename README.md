@@ -84,3 +84,4 @@ make            # or: cmake -B build && cmake --build build
 ## Developer resources
 
 - [Feature usage and API contracts](docs/RECENT_IMPROVEMENTS.md)
+- [Troubleshooting and recovery](docs/TROUBLESHOOTING.md)
