@@ -74,3 +74,9 @@ C++20, Clang or GCC. SQLite is linked only into `bench_tpch`.
 ```bash
 make            # or: cmake -B build && cmake --build build
 ```
+
+## Reusing Bloom filters
+
+`BloomFilter::Clear()` removes inserted entries while retaining the allocated capacity and hash count. Reuse the filter with `Add()` afterward. An uninitialized filter remains conservative and returns `true` for possible membership.
+
+`Reset()` validates requested capacity before allocating; an overflowing request raises `std::length_error` and preserves the previous filter. `make test` includes clear/reuse and capacity-overflow regression checks.
