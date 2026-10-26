@@ -81,4 +81,7 @@ Bloom b(100);for(int i=0;i<100;i++)b.Add(std::to_string(i));for(int i=0;i<100;i+
   { // duplicate-bloom-inserts-do-not-increase-fill-ratio
 Bloom b(100);b.Add("same");auto fill=b.FillRatio();b.Add("same");assert(b.FillRatio()==fill);assert(b.Count()==2);
   }
+  { // bloom-clear-retains-capacity-and-hash-count
+Bloom b(100);auto bytes=b.SizeBytes();auto hashes=b.HashCount();b.Add("x");b.Clear();assert(b.SizeBytes()==bytes&&b.HashCount()==hashes&&b.Empty());
+  }
 }
