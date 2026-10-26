@@ -69,4 +69,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*i
   { // compacting-empty-pages-reclaims-no-live-bytes
 Page p;P::Init(&p,7);auto free=p.FreeSpace();P::Compact(&p);assert(P::LiveBytes(&p)==0&&p.FreeSpace()==free);
   }
+  { // uninitialized-bloom-filters-answer-conservatively
+Bloom b;assert(b.MaybeContains("anything"));assert(b.EstimatedFalsePositiveRate()==1);
+  }
 }
