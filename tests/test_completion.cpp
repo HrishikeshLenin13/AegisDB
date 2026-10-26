@@ -108,4 +108,7 @@ Bloom b(10);for(int i=0;i<1000;i++)b.Add(std::to_string(i));assert(b.FillRatio()
   { // empty-bulk-insertion-does-not-change-filter-state
 Bloom b(10);std::vector<std::string> keys;b.AddRange(keys.begin(),keys.end());assert(b.Empty()&&b.FillRatio()==0);
   }
+  { // bloom-merge-order-does-not-change-bit-occupancy
+Bloom a(100),b(100);a.Add("a");b.Add("b");Bloom x=a,y=b;x.MergeFrom(b);y.MergeFrom(a);assert(x.FillRatio()==y.FillRatio());
+  }
 }
