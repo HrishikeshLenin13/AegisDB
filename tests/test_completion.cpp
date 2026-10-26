@@ -99,4 +99,7 @@ Bloom a(100),b(100);a.Add("a");b.Add("b");a.MergeFrom(b);assert(a.MaybeContains(
   { // incompatible-bloom-merges-do-not-change-the-receiver
 Bloom a(100),b(1000);a.Add("a");auto fill=a.FillRatio();bool fail=false;try{a.MergeFrom(b);}catch(const std::invalid_argument&){fail=true;}assert(fail&&a.FillRatio()==fill&&a.Count()==1);
   }
+  { // bloom-copies-have-independent-bit-storage
+Bloom a(100);a.Add("a");Bloom b=a;b.Clear();assert(a.MaybeContains("a")&&!a.Empty());assert(b.Empty());
+  }
 }
