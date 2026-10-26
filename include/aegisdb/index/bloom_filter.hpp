@@ -67,6 +67,16 @@ class BloomFilter {
     return true;
   }
 
+  // Compatible filters use identical bit capacity, hash count, and hash algorithm.
+  void MergeFrom(const BloomFilter& other) {
+    if (bits_.size() != other.bits_.size() || k_ != other.k_)
+      throw std::invalid_argument("Bloom filters require matching capacity and hash count");
+    if (other.n_ > std::numeric_limits<std::size_t>::max() - n_)
+      throw std::overflow_error("Bloom insertion count overflow");
+    for (std::size_t i=0;i<bits_.size();++i) bits_[i] |= other.bits_[i];
+    n_ += other.n_;
+  }
+
   // Reuse the current capacity and hash count without reallocating.
   void Clear() {
     std::fill(bits_.begin(), bits_.end(), 0);
