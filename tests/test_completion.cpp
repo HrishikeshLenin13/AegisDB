@@ -102,4 +102,7 @@ Bloom a(100),b(1000);a.Add("a");auto fill=a.FillRatio();bool fail=false;try{a.Me
   { // bloom-copies-have-independent-bit-storage
 Bloom a(100);a.Add("a");Bloom b=a;b.Clear();assert(a.MaybeContains("a")&&!a.Empty());assert(b.Empty());
   }
+  { // bloom-fill-and-model-estimates-stay-bounded
+Bloom b(10);for(int i=0;i<1000;i++)b.Add(std::to_string(i));assert(b.FillRatio()>=0&&b.FillRatio()<=1);assert(b.EstimatedFalsePositiveRate()>=0&&b.EstimatedFalsePositiveRate()<=1);
+  }
 }
