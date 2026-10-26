@@ -117,4 +117,7 @@ Bloom b(100);assert(b.BitCount()==b.SizeBytes()*8);assert(b.HashCount()>0);
   { // default-record-identifiers-are-invalid
 aegisdb::RID id;assert(!id.Valid());assert(id.page_id==aegisdb::kInvalidPageId);
   }
+  { // record-identifiers-compare-page-before-slot
+aegisdb::RID a{1,9},b{2,0};assert(a<b);assert(!(b<a));
+  }
 }
