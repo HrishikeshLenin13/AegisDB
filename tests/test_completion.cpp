@@ -36,4 +36,7 @@ Page p;P::Init(&p,7);std::uint8_t b=1;auto old=P::Insert(&p,&b,1);P::Delete(&p,*
   { // shrinking-updates-retain-the-original-slot
 Page p;P::Init(&p,7);std::uint8_t data[]={1,2,3};auto id=P::Insert(&p,data,3);assert(P::Update(&p,*id,data,1));assert(P::Read(&p,*id)->size()==1);assert(P::LiveBytes(&p)==1);
   }
+  { // growing-updates-keep-neighboring-tuples-unchanged
+Page p;P::Init(&p,7);std::uint8_t b=2;auto x=P::Insert(&p,&b,1),y=P::Insert(&p,&b,1);std::vector<std::uint8_t> data(80,9);assert(P::Update(&p,*x,data.data(),80));assert(P::Read(&p,*y)->at(0)==2);
+  }
 }
