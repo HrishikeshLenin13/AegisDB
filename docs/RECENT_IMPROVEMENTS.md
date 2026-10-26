@@ -39,3 +39,7 @@ Run from the repository root:
 make test && python3 -m unittest discover -s tests -v
 ```
 
+
+## Slotted-page storage
+
+`LiveTupleCount`, `LiveBytes`, and `ReclaimableBytes` distinguish directory space from dead payload bytes. `Compact` preserves slot IDs; insertion and growing updates reclaim space when needed. Failed oversized updates leave tuples intact. `ReadInto(page, slot, span)` reads into caller-owned storage without an allocation and leaves short destinations untouched. The caller must retain the usual page latch; these helpers do not add internal synchronization.

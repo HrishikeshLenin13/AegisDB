@@ -29,6 +29,11 @@ int main() {
     assert(aegisdb::SlottedPage::Update(&page,ids[0],larger.data(),180));assert(aegisdb::SlottedPage::Read(&page,ids[0]).value()==larger);
     for(std::size_t i=1;i+1<ids.size();i++) assert(aegisdb::SlottedPage::Read(&page,ids[i]).value()==data);
   }
+  { aegisdb::Page page;aegisdb::SlottedPage::Init(&page,1);std::uint8_t bytes[]={1,2,3};auto id=aegisdb::SlottedPage::Insert(&page,bytes,3);
+    std::uint8_t small[]={9,9};assert(!aegisdb::SlottedPage::ReadInto(&page,*id,small));assert(small[0]==9 && small[1]==9);
+    std::uint8_t out[]={0,0,0,7};assert(aegisdb::SlottedPage::ReadInto(&page,*id,out)==3);assert(out[0]==1 && out[2]==3 && out[3]==7);
+    assert(!aegisdb::SlottedPage::ReadInto(&page,99,out));
+  }
   // CASES
   std::cout << "Slotted-page regression checks passed.\n";
 }

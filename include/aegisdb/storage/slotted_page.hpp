@@ -7,6 +7,7 @@
 #include <cstdint>
 #include <cstring>
 #include <optional>
+#include <span>
 #include <vector>
 
 namespace aegisdb {
@@ -119,6 +120,16 @@ class SlottedPage {
     WriteSlot(page, slot_id, Slot{h->free_end, size, 0});
     page->SetDirty(true);
     return true;
+  }
+
+  // A short destination fails without changing any caller bytes.
+  static std::optional<std::uint16_t> ReadInto(const Page* page, std::uint16_t slot_id,
+                                             std::span<std::uint8_t> destination) {
+    if (slot_id >= page->Header()->slot_count) return std::nullopt;
+    const auto slot = ReadSlot(page, slot_id);
+    if ((slot.flags & kSlotEmpty) || destination.size() < slot.size) return std::nullopt;
+    if (slot.size) std::memcpy(destination.data(), page->Data() + slot.offset, slot.size);
+    return slot.size;
   }
 
   static std::optional<std::vector<std::uint8_t>> Read(const Page* page, std::uint16_t slot_id) {
