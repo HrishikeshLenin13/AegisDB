@@ -45,4 +45,7 @@ Page p;P::Init(&p,7);std::uint8_t b=7;auto id=P::Insert(&p,&b,1);std::vector<std
   { // unknown-update-targets-do-not-create-tuples
 Page p;P::Init(&p,7);std::uint8_t b=1;assert(!P::Update(&p,99,&b,1));assert(P::LiveTupleCount(&p)==0);
   }
+  { // deleted-update-targets-stay-deleted
+Page p;P::Init(&p,7);std::uint8_t b=1;auto id=P::Insert(&p,&b,1);P::Delete(&p,*id);assert(!P::Update(&p,*id,&b,1));
+  }
 }
