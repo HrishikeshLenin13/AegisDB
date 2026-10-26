@@ -108,14 +108,12 @@ class SlottedPage {
       page->SetDirty(true);
       return true;
     }
+    // Check total reclaimable capacity before changing the existing tuple.
+    if (page->FreeSpace() + ReclaimableBytes(page) + s.size < size) return false;
     // Delete logically then insert at a new offset, keeping the same slot id.
     s.flags |= kSlotEmpty;
     WriteSlot(page, slot_id, s);
-    if (page->FreeSpace() < size) {
-      s.flags = 0;
-      WriteSlot(page, slot_id, s);
-      return false;
-    }
+    if (page->FreeSpace() < size) Compact(page);
     h->free_end = static_cast<std::uint16_t>(h->free_end - size);
     std::memcpy(page->Data() + h->free_end, data, size);
     WriteSlot(page, slot_id, Slot{h->free_end, size, 0});
