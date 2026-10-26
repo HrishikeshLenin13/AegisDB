@@ -129,4 +129,7 @@ aegisdb::RID a{1,2},b{1,2};assert(a==b);assert(!(a!=b));
   { // record-identifiers-render-both-address-components
 aegisdb::RID a{12,34};assert(a.ToString()=="(12,34)");
   }
+  { // page-initialization-keeps-explicit-page-types
+Page p;p.Init(9,aegisdb::PageType::Heap);assert(p.GetPageId()==9&&p.Header()->type==aegisdb::PageType::Heap);
+  }
 }
