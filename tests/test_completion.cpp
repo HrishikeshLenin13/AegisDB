@@ -87,4 +87,7 @@ Bloom b(100);auto bytes=b.SizeBytes();auto hashes=b.HashCount();b.Add("x");b.Cle
   { // bloom-reset-replaces-old-insertion-state
 Bloom b(100);b.Add("old");b.Reset(200);assert(b.Empty()&&b.FillRatio()==0);
   }
+  { // invalid-bloom-probabilities-preserve-existing-state
+Bloom b(100);b.Add("old");for(double rate:{0.0,1.0,-0.1}){bool fail=false;try{b.Reset(100,rate);}catch(const std::invalid_argument&){fail=true;}assert(fail&&b.MaybeContains("old")&&b.Count()==1);}
+  }
 }
