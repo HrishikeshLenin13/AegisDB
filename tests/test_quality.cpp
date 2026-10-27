@@ -102,4 +102,7 @@ Page p;P::Init(&p,1);std::vector<std::uint8_t> source(256,42);auto id=P::Insert(
   { // bloom-key-roundtrip-empty
 Bloom a(100),b(100);auto key=std::string();std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
   }
+  { // bloom-key-roundtrip-ascii
+Bloom a(100),b(100);auto key=std::string("ordinary");std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
+  }
 }
