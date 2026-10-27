@@ -72,4 +72,7 @@ Page p;P::Init(&p,1);std::vector<std::uint8_t> source(8,42);auto id=P::Insert(&p
   { // readinto-guarded-capacity-15
 Page p;P::Init(&p,1);std::vector<std::uint8_t> source(15,42);auto id=P::Insert(&p,source.data(),15);std::vector<std::uint8_t> target(17,99);assert(!P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),14)));for(auto b:target)assert(b==99);assert(P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),16)).value()==15);for(std::size_t i=0;i<15;i++)assert(target[i]==42);assert(target[15]==99&&target[16]==99);
   }
+  { // readinto-guarded-capacity-16
+Page p;P::Init(&p,1);std::vector<std::uint8_t> source(16,42);auto id=P::Insert(&p,source.data(),16);std::vector<std::uint8_t> target(18,99);assert(!P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),15)));for(auto b:target)assert(b==99);assert(P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),17)).value()==16);for(std::size_t i=0;i<16;i++)assert(target[i]==42);assert(target[16]==99&&target[17]==99);
+  }
 }
