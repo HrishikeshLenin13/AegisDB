@@ -99,4 +99,7 @@ Page p;P::Init(&p,1);std::vector<std::uint8_t> source(255,42);auto id=P::Insert(
   { // readinto-guarded-capacity-256
 Page p;P::Init(&p,1);std::vector<std::uint8_t> source(256,42);auto id=P::Insert(&p,source.data(),256);std::vector<std::uint8_t> target(258,99);assert(!P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),255)));for(auto b:target)assert(b==99);assert(P::ReadInto(&p,*id,std::span<std::uint8_t>(target.data(),257)).value()==256);for(std::size_t i=0;i<256;i++)assert(target[i]==42);assert(target[256]==99&&target[257]==99);
   }
+  { // bloom-key-roundtrip-empty
+Bloom a(100),b(100);auto key=std::string();std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
+  }
 }
