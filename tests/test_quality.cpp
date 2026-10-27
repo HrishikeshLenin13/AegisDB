@@ -39,4 +39,7 @@ Page p;P::Init(&p,77,11,88);std::vector<std::uint8_t> value(31,7),other(32,9);au
   { // slotted-lifecycle-payload-32
 Page p;P::Init(&p,77,11,88);std::vector<std::uint8_t> value(32,7),other(33,9);auto a=P::Insert(&p,value.data(),32);auto b=P::Insert(&p,other.data(),33);assert(a&&b);assert(P::Read(&p,*a).value()==value);assert(P::Update(&p,*a,other.data(),33));assert(P::Read(&p,*a).value()==other);assert(P::Delete(&p,*b));P::Compact(&p);assert(P::Read(&p,*a).value()==other);assert(!P::Read(&p,*b));assert(P::LiveTupleCount(&p)==1);assert(P::LiveBytes(&p)==33);assert(P::ReclaimableBytes(&p)==0);assert(p.Header()->prev_page==11&&p.Header()->next_page==88);
   }
+  { // slotted-lifecycle-payload-63
+Page p;P::Init(&p,77,11,88);std::vector<std::uint8_t> value(63,7),other(64,9);auto a=P::Insert(&p,value.data(),63);auto b=P::Insert(&p,other.data(),64);assert(a&&b);assert(P::Read(&p,*a).value()==value);assert(P::Update(&p,*a,other.data(),64));assert(P::Read(&p,*a).value()==other);assert(P::Delete(&p,*b));P::Compact(&p);assert(P::Read(&p,*a).value()==other);assert(!P::Read(&p,*b));assert(P::LiveTupleCount(&p)==1);assert(P::LiveBytes(&p)==64);assert(P::ReclaimableBytes(&p)==0);assert(p.Header()->prev_page==11&&p.Header()->next_page==88);
+  }
 }
