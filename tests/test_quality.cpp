@@ -117,4 +117,7 @@ Bloom a(100),b(100);auto key=std::string(16,0);std::vector<std::string> values{k
   { // bloom-key-roundtrip-high-byte
 Bloom a(100),b(100);auto key=std::string(16,static_cast<char>(255));std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
   }
+  { // bloom-key-roundtrip-unicode
+Bloom a(100),b(100);auto key=std::string("café");std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
+  }
 }
