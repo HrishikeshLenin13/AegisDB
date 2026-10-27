@@ -159,4 +159,7 @@ Bloom a(3,0.1),b(3,0.1);assert(a.BitCount()==b.BitCount()&&a.HashCount()==b.Hash
   { // bloom-compatible-configuration-7-0_1
 Bloom a(7,0.1),b(7,0.1);assert(a.BitCount()==b.BitCount()&&a.HashCount()==b.HashCount());assert(a.BitCount()>0&&a.HashCount()>0);for(int i=0;i<20;i++)a.Add(std::to_string(i));b.MergeFrom(a);for(int i=0;i<20;i++)assert(b.MaybeContains(std::to_string(i)));assert(b.Count()==20&&a.Count()==20);assert(b.FillRatio()==a.FillRatio());assert(b.EstimatedFalsePositiveRate()>=0&&b.EstimatedFalsePositiveRate()<=1);b.Reset(7,0.1);assert(b.Empty()&&b.FillRatio()==0);assert(b.BitCount()==a.BitCount());
   }
+  { // bloom-compatible-configuration-8-0_01
+Bloom a(8,0.01),b(8,0.01);assert(a.BitCount()==b.BitCount()&&a.HashCount()==b.HashCount());assert(a.BitCount()>0&&a.HashCount()>0);for(int i=0;i<20;i++)a.Add(std::to_string(i));b.MergeFrom(a);for(int i=0;i<20;i++)assert(b.MaybeContains(std::to_string(i)));assert(b.Count()==20&&a.Count()==20);assert(b.FillRatio()==a.FillRatio());assert(b.EstimatedFalsePositiveRate()>=0&&b.EstimatedFalsePositiveRate()<=1);b.Reset(8,0.01);assert(b.Empty()&&b.FillRatio()==0);assert(b.BitCount()==a.BitCount());
+  }
 }
