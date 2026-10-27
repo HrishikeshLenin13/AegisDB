@@ -126,4 +126,7 @@ Bloom a(100),b(100);auto key=std::string("数学");std::vector<std::string> valu
   { // bloom-key-roundtrip-emoji
 Bloom a(100),b(100);auto key=std::string("📚");std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
   }
+  { // bloom-key-roundtrip-long
+Bloom a(100),b(100);auto key=std::string(1000,'x');std::vector<std::string> values{key,key+"suffix"};a.AddRange(values.begin(),values.end());assert(a.Count()==2);for(const auto& value:values)assert(a.MaybeContains(value));b.Add("other");auto source_count=b.Count();a.MergeFrom(b);for(const auto& value:values)assert(a.MaybeContains(value));assert(a.MaybeContains("other"));assert(b.Count()==source_count);auto bits=a.BitCount();a.Clear();assert(a.Empty()&&a.BitCount()==bits&&a.FillRatio()==0.0);
+  }
 }
