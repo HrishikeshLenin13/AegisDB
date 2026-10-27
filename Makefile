@@ -28,6 +28,8 @@ test: aegis_test
 	/tmp/aegis-slotted-round3
 	$(CXX) $(CXXFLAGS) tests/test_completion.cpp -o /tmp/aegis-completion-contracts
 	/tmp/aegis-completion-contracts
+	$(CXX) $(CXXFLAGS) tests/test_quality.cpp -o /tmp/aegis-quality-contracts
+	/tmp/aegis-quality-contracts
 
 bench: bench_tpch
 	./bench_tpch 1
