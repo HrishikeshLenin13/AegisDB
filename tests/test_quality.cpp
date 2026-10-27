@@ -189,4 +189,7 @@ Bloom a(127,0.25),b(127,0.25);assert(a.BitCount()==b.BitCount()&&a.HashCount()==
   { // bloom-compatible-configuration-256-0_5
 Bloom a(256,0.5),b(256,0.5);assert(a.BitCount()==b.BitCount()&&a.HashCount()==b.HashCount());assert(a.BitCount()>0&&a.HashCount()>0);for(int i=0;i<20;i++)a.Add(std::to_string(i));b.MergeFrom(a);for(int i=0;i<20;i++)assert(b.MaybeContains(std::to_string(i)));assert(b.Count()==20&&a.Count()==20);assert(b.FillRatio()==a.FillRatio());assert(b.EstimatedFalsePositiveRate()>=0&&b.EstimatedFalsePositiveRate()<=1);b.Reset(256,0.5);assert(b.Empty()&&b.FillRatio()==0);assert(b.BitCount()==a.BitCount());
   }
+  { // record-id-and-page-lifecycle-0-0
+aegisdb::RID a{0u,0},b=a;assert(a.Valid()&&a==b&&!(a<b));assert(a.ToString()=="(0,0)");assert(aegisdb::RIDHash{}(a)==aegisdb::RIDHash{}(b));Page p;P::Init(&p,0u);p.Pin();p.SetRef(true);p.SetLsn(123);assert(p.GetPageId()==0u&&p.PinCount()==1&&p.Ref());p.Unpin();p.Reset();assert(p.PinCount()==0&&!p.Ref()&&!p.IsDirty());assert(p.GetPageId()==aegisdb::kInvalidPageId);assert(p.FreeSpace()==aegisdb::kPageSize-aegisdb::kPageHeaderSize);
+  }
 }
