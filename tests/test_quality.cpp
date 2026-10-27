@@ -213,4 +213,7 @@ aegisdb::RID a{256u,2},b=a;assert(a.Valid()&&a==b&&!(a<b));assert(a.ToString()==
   { // record-id-and-page-lifecycle-65535-0
 aegisdb::RID a{65535u,0},b=a;assert(a.Valid()&&a==b&&!(a<b));assert(a.ToString()=="(65535,0)");assert(aegisdb::RIDHash{}(a)==aegisdb::RIDHash{}(b));Page p;P::Init(&p,65535u);p.Pin();p.SetRef(true);p.SetLsn(123);assert(p.GetPageId()==65535u&&p.PinCount()==1&&p.Ref());p.Unpin();p.Reset();assert(p.PinCount()==0&&!p.Ref()&&!p.IsDirty());assert(p.GetPageId()==aegisdb::kInvalidPageId);assert(p.FreeSpace()==aegisdb::kPageSize-aegisdb::kPageHeaderSize);
   }
+  { // record-id-and-page-lifecycle-65536-1
+aegisdb::RID a{65536u,1},b=a;assert(a.Valid()&&a==b&&!(a<b));assert(a.ToString()=="(65536,1)");assert(aegisdb::RIDHash{}(a)==aegisdb::RIDHash{}(b));Page p;P::Init(&p,65536u);p.Pin();p.SetRef(true);p.SetLsn(123);assert(p.GetPageId()==65536u&&p.PinCount()==1&&p.Ref());p.Unpin();p.Reset();assert(p.PinCount()==0&&!p.Ref()&&!p.IsDirty());assert(p.GetPageId()==aegisdb::kInvalidPageId);assert(p.FreeSpace()==aegisdb::kPageSize-aegisdb::kPageHeaderSize);
+  }
 }
