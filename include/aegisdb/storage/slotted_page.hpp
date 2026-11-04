@@ -5,6 +5,7 @@
 #include "aegisdb/storage/tuple.hpp"
 
 #include <cstdint>
+#include <array>
 #include <cstring>
 #include <optional>
 #include <span>
@@ -171,26 +172,17 @@ class SlottedPage {
   // Preserve stable slot IDs while reclaiming every dead/shrunken tuple byte.
   static void Compact(Page* page) {
     auto* h = page->Header();
-    std::vector<std::vector<std::uint8_t>> tuples(h->slot_count);
-    std::vector<bool> empty(h->slot_count);
-    for (std::uint16_t i = 0; i < h->slot_count; ++i) {
-      Slot s = ReadSlot(page, i);
-      empty[i] = s.flags & kSlotEmpty;
-      if (!empty[i]) {
-        tuples[i].resize(s.size);
-        std::memcpy(tuples[i].data(), page->Data() + s.offset, s.size);
-      }
+    std::array<char,kPageSize> packed{};
+    std::uint16_t end=kPageSize;
+    // Read payloads before writing any payload bytes; directory entries stay in place.
+    for(std::uint16_t i=0;i<h->slot_count;++i){
+      const Slot slot=ReadSlot(page,i);
+      if(slot.flags&kSlotEmpty){WriteSlot(page,i,Slot{0,0,kSlotEmpty});continue;}
+      end=static_cast<std::uint16_t>(end-slot.size);
+      if(slot.size)std::memcpy(packed.data()+end,page->Data()+slot.offset,slot.size);
+      WriteSlot(page,i,Slot{end,slot.size,0});
     }
-    std::uint16_t end = kPageSize;
-    for (std::uint16_t i = 0; i < h->slot_count; ++i) {
-      if (empty[i]) {
-        WriteSlot(page, i, Slot{0, 0, kSlotEmpty});
-        continue;
-      }
-      end = static_cast<std::uint16_t>(end - tuples[i].size());
-      std::memcpy(page->Data() + end, tuples[i].data(), tuples[i].size());
-      WriteSlot(page, i, Slot{end, static_cast<std::uint16_t>(tuples[i].size()), 0});
-    }
+    if(end<kPageSize)std::memcpy(page->Data()+end,packed.data()+end,kPageSize-end);
     h->free_end = end;
     page->SetDirty(true);
   }

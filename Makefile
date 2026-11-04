@@ -30,6 +30,8 @@ test: aegis_test
 	/tmp/aegis-completion-contracts
 	$(CXX) $(CXXFLAGS) tests/test_quality.cpp -o /tmp/aegis-quality-contracts
 	/tmp/aegis-quality-contracts
+	$(CXX) $(CXXFLAGS) tests/test_compact_allocations.cpp -o /tmp/aegis-compact-allocation
+	/tmp/aegis-compact-allocation
 
 bench: bench_tpch
 	./bench_tpch 1
