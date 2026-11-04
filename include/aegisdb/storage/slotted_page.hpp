@@ -53,6 +53,14 @@ class SlottedPage {
     h->free_end = kPageSize;
   }
 
+  // Nonmutating preflight includes reclaimable tuple bytes and reusable directory slots.
+  static bool CanInsert(const Page* page,std::uint16_t size) {
+    const auto available=page->FreeSpace()+ReclaimableBytes(page);
+    for(std::uint16_t i=0;i<page->Header()->slot_count;++i)
+      if(ReadSlot(page,i).flags&kSlotEmpty)return available>=size;
+    return available>=static_cast<std::size_t>(size)+kSlotSize;
+  }
+
   static std::optional<std::uint16_t> Insert(Page* page, const std::uint8_t* data, std::uint16_t size) {
     auto* h = page->Header();
     // Reuse an empty slot if the tuple fits in the current free region.
